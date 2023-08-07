@@ -1,5 +1,8 @@
-let valueHigh = 0
-let valueLow = 0
+let value2 = 0
+let value1 = 0
+let valueForwards = 0
+let valueTurn = 0
+let thisRoll = 0
 let comment = ""
 radio.setGroup(242)
 basic.showLeds(`
@@ -12,31 +15,28 @@ basic.showLeds(`
 basic.forever(function () {
     if (input.buttonIsPressed(Button.AB)) {
         comment = "Strafing"
-        radio.sendValue("M1", Math.map(input.rotation(Rotation.Roll), -90, 90, -100, 100))
-        radio.sendValue("M2", Math.map(input.rotation(Rotation.Roll), -90, 90, -100, 100))
-        radio.sendValue("M3", Math.map(input.rotation(Rotation.Roll), -90, 90, 100, -100))
-        radio.sendValue("M4", Math.map(input.rotation(Rotation.Roll), -90, 90, 100, -100))
+        thisRoll = Math.map(input.rotation(Rotation.Roll), -90, 90, -100, 100)
+        radio.sendValue("M1", thisRoll)
+        radio.sendValue("M2", thisRoll)
+        radio.sendValue("M3", thisRoll)
+        radio.sendValue("M4", thisRoll)
     } else if (input.buttonIsPressed(Button.A)) {
-        valueLow = Math.map(input.rotation(Rotation.Roll), -90, 90, -100, 100)
-        valueHigh = Math.map(input.rotation(Rotation.Pitch), -90, 90, -100, 100)
         comment = "Drive and slide"
-        if (valueLow < 0) {
-            radio.sendValue("M1", valueHigh)
-            radio.sendValue("M2", -1 * (valueHigh + valueLow))
-            radio.sendValue("M3", valueHigh + valueLow)
-            radio.sendValue("M4", -1 * valueHigh)
-        } else {
-            radio.sendValue("M1", valueHigh)
-            radio.sendValue("M2", -1 * (valueHigh - valueLow))
-            radio.sendValue("M3", valueHigh - valueLow)
-            radio.sendValue("M4", -1 * valueHigh)
-        }
+        valueTurn = Math.map(input.rotation(Rotation.Roll), -90, 90, -100, 100)
+        valueForwards = -1 * Math.map(input.rotation(Rotation.Pitch), -90, 90, -100, 100)
+        value1 = Math.constrain(valueForwards + valueTurn, -100, 100)
+        value2 = Math.constrain(valueForwards - valueTurn, -100, 100)
+        radio.sendValue("M1", value2)
+        radio.sendValue("M2", value1)
+        radio.sendValue("M3", value1)
+        radio.sendValue("M4", value2)
     } else if (input.buttonIsPressed(Button.B)) {
         comment = "Spinning"
-        radio.sendValue("M1", Math.map(input.rotation(Rotation.Roll), -90, 90, -100, 100))
-        radio.sendValue("M2", Math.map(input.rotation(Rotation.Roll), -90, 90, 100, -100))
-        radio.sendValue("M3", Math.map(input.rotation(Rotation.Roll), -90, 90, 100, -100))
-        radio.sendValue("M4", Math.map(input.rotation(Rotation.Roll), -90, 90, -100, 100))
+        thisRoll = Math.map(input.rotation(Rotation.Roll), -90, 90, -100, 100)
+        radio.sendValue("M1", -1 * thisRoll)
+        radio.sendValue("M2", thisRoll)
+        radio.sendValue("M3", thisRoll)
+        radio.sendValue("M4", thisRoll)
     } else {
         radio.sendValue("M1", 0)
         radio.sendValue("M2", 0)
